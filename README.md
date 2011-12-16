@@ -1,7 +1,7 @@
 TODO
 ====
 
-+ Removes books/chapters/sets to all sections
++ ~~Removes books/chapters/sets to all sections~~
 - Set is removed
 + Set partintro becomes introductory text to first section
 + Changes ids from foo to php-api-foo, and no xml:id, ex:
