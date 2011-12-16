@@ -32,6 +32,7 @@ class Package_MySQL_DocBook extends Format
         'chapter'       => 'format_section',
         'function'      => 'format_suppressed_tags',
         'partintro'     => 'format_suppressed_tags',
+        'phpdoc:classref'   => 'format_section',
         'preface'       => 'format_suppressed_tags',
         'refentry'      => 'format_refentry',
         'reference'     => 'format_section',
@@ -220,6 +221,8 @@ HEADER;
             case 'role':
             case 'choice':
             case 'xmlns':
+            case 'xmlns:phpdoc':
+            case 'xmlns:xi':
             case 'xmlns:xlink':
                 $attr = $value = '';
                 break;
