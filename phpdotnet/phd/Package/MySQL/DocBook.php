@@ -217,6 +217,8 @@ HEADER;
 
                 $value = $this::ID_PREFIX . $value;
                 break;
+            case 'role':
+            case 'choice':
             case 'xmlns':
             case 'xmlns:xlink':
                 $attr = $value = '';
