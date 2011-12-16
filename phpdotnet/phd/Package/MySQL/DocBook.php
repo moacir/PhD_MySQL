@@ -24,7 +24,8 @@ namespace phpdotnet\phd;
  */
 class Package_MySQL_DocBook extends Format
 {
-    const ID_PREFIX = 'apis-php-';
+    const ID_PREFIX  = 'apis-php-';
+    const URL_PHPNET = 'http://www.php.net/'; 
 
     protected $myelementmap = array(
         'appendix'      => 'format_section',
@@ -278,9 +279,10 @@ COPYRIGHT;
         if (($filename = $this->getRefnameLink($ref)) !== null) {
             $filename = $this::ID_PREFIX . $filename;
             return sprintf('<link linkend="%s"><function>%s</function></link>', $filename, $value);
+        } else {
+            $url = $this::URL_PHPNET . $value;
+            return sprintf('<link linkend="%s"><function>%s</function></link>', $url, $value);
         }
-
-        return "<function>$value</function>";
     }
 
     public function format_refentry($open, $name, $attrs, $props)
