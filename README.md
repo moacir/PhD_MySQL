@@ -22,7 +22,7 @@ TODO
     refpurpose markup is removed, content is moved into a listitem with the function name as the title
     refsect markup is removed, where a para/emphasis replaces the title~~
 * Remove \<titleabrev> and its contents
-* Change \<phpdoc:classref id="apis-php-class.mysqli ...> and friends, into the likes of \<section id="apis-php-class.mysqli">
+* ~~Change \<phpdoc:classref id="apis-php-class.mysqli ...> and friends, into the likes of \<section id="apis-php-class.mysqli">~~
 
 ##PhD 0.4
 
