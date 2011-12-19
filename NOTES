@@ -1,0 +1,19 @@
+=== Notes ===
+
+Notes that are associated with the PhD_MySQL package and theme.
+
+==== Partial builds: configure.php versus phd ====
+
+Building a partial build (e.g., for one book id) is used, and there 
+are two methods for creating them. Creating a "partial" build with 
+configure.php wraps the generated XML with an extra <section>, so 
+instead we rely on using --partial with PhD.
+
+====== Using configure.php =====
+  $ php doc-base/configure.php --with-partial=book.mysql
+  $ phd --docbook doc-base/.manual.book.mysql.xml --package MySQL --format docbook --mysql-output=c_test.xml
+
+====== Using PhD =====
+  $ php doc-base/configure.php
+  $ phd --docbook doc-base/.manual.book.mysql.xml --partial book.mysql --package MySQL --format docbook --mysql-output=p_test.xml
+
