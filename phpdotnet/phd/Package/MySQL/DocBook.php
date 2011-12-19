@@ -259,7 +259,7 @@ COPYRIGHT;
     {
         return '';
     }
- 
+  
     public function format_section($open, $name, $attrs, $props)
     {
         return $this->formatElementTags($open, 'section', $attrs, $props);
