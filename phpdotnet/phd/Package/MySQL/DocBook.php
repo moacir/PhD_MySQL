@@ -51,6 +51,8 @@ class Package_MySQL_DocBook extends Format
             'appendix'  => 'format_section_title',
             'book'      => 'format_section_title',
             'chapter'   => 'format_section_title',
+            'phpdoc:classref'   => 'format_section_title',
+            'preface'   => 'format_suppressed_tags',
             'reference' => 'format_section_title',
             'refsect1'  => 'format_refsect1_title',
             'section'   => array(
@@ -58,8 +60,8 @@ class Package_MySQL_DocBook extends Format
                 'partintro'  => 'format_suppressed_tags', 
             ),
             'set'       => 'format_section_title',
-            'preface'   => 'format_suppressed_tags',
         ),
+        'titleabbrev'   => 'format_suppressed_tags',
     );
 
     protected $mytextmap = array(
@@ -73,6 +75,16 @@ class Package_MySQL_DocBook extends Format
                 'partintro'  => 'format_suppressed_text', 
             ),
         ),
+        'titleabbrev'   => 'format_suppressed_text',
+    );
+
+    /**
+     * Store information about the current chunk 
+     *
+     * @var Array
+     */
+    protected $cchunk = array(
+        'titleabbrev' => '',
     );
 
     public function __construct()
@@ -250,6 +262,14 @@ COPYRIGHT;
         return $xmlParser->refname;
     }
 
+    public function extractTitleabbrev()
+    {
+        $xmlContent = sprintf('<notatag>%s</notatag>', ReaderKeeper::getReader()->readInnerXML());
+        $xmlParser = simplexml_load_string($xmlContent);
+
+        return $xmlParser->titleabbrev[0];
+    }
+
     public function format_suppressed_tags($open, $name, $attrs, $props)
     {
         return '';
@@ -262,6 +282,7 @@ COPYRIGHT;
   
     public function format_section($open, $name, $attrs, $props)
     {
+        $this->cchunk['titleabbrev'] = $open ? $this->extractTitleabbrev() : '';
         return $this->formatElementTags($open, 'section', $attrs, $props);
     }
 
@@ -270,7 +291,12 @@ COPYRIGHT;
         if ($open) {
             return $this->formatElementTags($open, $name, $attrs, $props);
         }
-        return '</title>' . $this->getCopyRightInfo();
+
+        //render titleabbrev as literal
+        $titleabbrev = $this->cchunk['titleabbrev']
+            ? ' (<literal>' . $this->cchunk['titleabbrev'] . '</literal>)': '';
+
+        return $titleabbrev . '</title>' . $this->getCopyRightInfo();
     }
 
     public function format_function_text($value, $tag)
