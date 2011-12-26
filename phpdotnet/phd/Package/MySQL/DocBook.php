@@ -62,6 +62,8 @@ class Package_MySQL_DocBook extends Format
             'set'       => 'format_section_title',
         ),
         'titleabbrev'   => 'format_suppressed_tags',
+        'link'          => 'format_link',
+        'xref'          => 'format_link',
     );
 
     protected $mytextmap = array(
@@ -76,6 +78,36 @@ class Package_MySQL_DocBook extends Format
             ),
         ),
         'titleabbrev'   => 'format_suppressed_text',
+        'link'          => 'format_link_text',
+        'xref'          => 'format_link_text',
+    );
+    
+    protected $links = array(
+        'ini'                                        => 'ini',
+        'ref.recode'                                 => 'ref.recode',
+        'features.persistent-connections'            => 'features.persistent-connections',
+        'ini.sql.safe-mode'                          => 'ini.core.php#ini.sql.safe-mode',
+        'language.types.resource.self-destruct'      => 'language.types.resource.php#language.types.resource.self-destruct',
+        'ini.mysql.default-host'                     => 'ini.mysql.default-host',
+        'ini.mysql.default-user'                     => 'ini.mysql.default-user',
+        'faq.databases.mysql.php5'                   => 'faq.databases.php#faq.databases.mysql.php5',
+        'ini.mysql.default-password'                 => 'ini.mysql.default-password',
+        'language.operators.errorcontrol'            => 'language.operators.errorcontrol',
+        'errorfunc.constants.errorlevels.e-warning'  => 'errorfunc.constants.php#errorfunc.constants.errorlevels.e-warning',
+        'ini.magic-quotes-gpc'                       => 'ini.core.php#ini.magic-quotes-gpc',
+        'ini.magic-quotes-runtime'                   => 'ini.core.php#ini.magic-quotes-runtime',
+        'security.magicquotes'                       => 'security.magicquotes',
+        'security.database.sql-injection'            => 'security.database.sql-injection',
+        'intro.pdo'                                  => 'intro.pdo',
+        'faq.installation.addtopath'                 => 'faq.installation.php#faq.installation.addtopath',
+        'ini.extension-dir'                          => 'ini.core.php#ini.extension-dir',
+        'ini.variables-order'                        => 'ini.core.php#ini.variables-orde',
+        'install.windows.manual'                     => 'install.windows.manual',
+        'configuration.changes'                      => 'configuration.changes',
+        'configuration.changes.modes'                => 'configuration.changes.modes',
+        'ini.safe-mode'                              => 'ini.core.php#ini.safe-mode',
+        'language.types.integer'                     => 'language.types.integer',
+        'book.stream'                                => 'book.stream',
     );
 
     /**
@@ -307,7 +339,7 @@ COPYRIGHT;
             return sprintf('<link linkend="%s"><function>%s</function></link>', $filename, $value);
         } else {
             $url = $this::URL_PHPNET . $value;
-            return sprintf('<link linkend="%s"><function>%s</function></link>', $url, $value);
+            return sprintf('<ulink url="%s"><function>%s</function></ulink>', $url, $value);
         }
     }
 
@@ -362,6 +394,75 @@ COPYRIGHT;
         return '</para>';
     }
 
+    public function format_link($open, $name, $attrs, $props)
+    {
+        $link       = '';
+        $linktype   = '';
+        $linkto     = '';
+        
+        // Local links
+        if (isset($attrs[Reader::XMLNS_DOCBOOK]["linkend"])) {
+            $linkto     = $attrs[Reader::XMLNS_DOCBOOK]["linkend"];
+
+            // Link mysql links locally
+            if (false !== strpos($linkto, 'mysql') && false === strpos($linkto, 'faq')) {
+                $link = $this::ID_PREFIX . $linkto;
+                $linktype   = 'local';
+            } else {
+                // Non-mysql links are now external
+                $link = $this::URL_PHPNET . $linkto;
+                $linktype = 'external';
+            }
+        }
+        
+        // External links
+        if (!$link && isset($attrs[Reader::XMLNS_XLINK]['href'])) {
+            $linkto     = $attrs[Reader::XMLNS_XLINK]['href'];
+            $linktype   = 'external';
+            
+            // Only link mysql.com links
+            if (false !== strpos($linkto, 'mysql.com')) {
+                $link = $linkto;
+            } else {
+                $link = $linkto;
+            }
+        }
+        
+        if ($open) {
+
+            if ($linktype === 'local') {
+                
+                if ($name === 'xref') {
+                    return '<xref linkend="' . $link . '"/>';
+                } else {
+                    return '<link linkend="' . $link . '">';
+                }
+                
+            } else {
+
+                if (isset($this->links[$linkto])) {
+                    $link = $this::URL_PHPNET . 'manual/en/' . $this->links[$linkto];
+                }
+                
+                if ($name === 'xref') {
+                    return '<ulink url="' . $link . '">' . $link . '</ulink>';
+                } else {
+                    return '<ulink url="' . $link . '">';
+                }
+            }
+        }
+        
+        if ($linktype === 'local') {
+            return "</link>";            
+        } else {
+            return '</ulink>';
+        }
+    }
+
+    public function format_link_text($value, $tag) 
+    {
+        return $value;
+    }
 }
 
 /*
