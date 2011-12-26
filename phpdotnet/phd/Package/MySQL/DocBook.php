@@ -64,6 +64,7 @@ class Package_MySQL_DocBook extends Format
         'titleabbrev'   => 'format_suppressed_tags',
         'link'          => 'format_link',
         'xref'          => 'format_link',
+        'tgroup'        => 'format_tgroup',
     );
 
     protected $mytextmap = array(
@@ -80,6 +81,7 @@ class Package_MySQL_DocBook extends Format
         'titleabbrev'   => 'format_suppressed_text',
         'link'          => 'format_link_text',
         'xref'          => 'format_link_text',
+        'tgroup'        => 'format_tgroup_text',
     );
     
     protected $links = array(
@@ -462,6 +464,41 @@ COPYRIGHT;
     public function format_link_text($value, $tag) 
     {
         return $value;
+    }
+    
+    public function format_tgroup_text($value, $tag)
+    {
+        return $value;
+    }
+
+    public function format_tgroup($open, $name, $attrs, $props)
+    {
+        $text = "<tgroup>\n";
+        
+        if ($open) {
+
+            if (isset($attrs[Reader::XMLNS_DOCBOOK]["cols"])) {
+
+                $cols       = (int) $attrs[Reader::XMLNS_DOCBOOK]["cols"];
+                $text       = '<tgroup cols="' . $cols . '">' . "\n";
+                $percent    = floor(100 / $cols);
+
+                for ($i = 1; $i <= $cols; $i++) {
+                
+                    if ($i === $cols) {
+                        if (($percent * $cols) !== 100) {
+                            $percent = $percent + (100-($percent*$cols));
+                        }
+                    }
+
+                    $text .= '<colspec colwidth="' . $percent . '*"/>' . "\n";
+                }
+            }
+            
+            return $text;
+        }
+        
+        return "</tgroup>\n";
     }
 }
 
