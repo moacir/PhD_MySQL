@@ -2,17 +2,17 @@ TODO
 ====
 
 * ~~Removes books/chapters/sets to all sections~~
-* Set is removed
+* ~~Outside \<section> to be removed (documented)~~
 * ~~Set partintro becomes introductory text to first section~~
 * ~~Changes ids from foo to php-api-foo, and no xml:id, ex:
     Ours: \<para xml:id="mysql.configure">
     Theirs: \<para id="apis-php-mysql.configure">~~
 * ~~Inserts copyright info (a \<para>foo\</para>) under the title of every section~~
-* Links to other parts of the manual turn into full URLs ex:
+* ~~Links to other parts of the manual turn into full URLs ex:
     Ours:   \<link linkend="ini.extension-dir">extension_dir\</link>
     Theirs: \<ulink url="http://www.php.net/manual/en/ini.core.php#ini.extension-dir">extension_dir\</ulink>
-    Note: The 'en' depends on translation, but, only using /en/ for all links is fine for now
-* Links to external sites: Are not linked except mysql.com links
+    Note: The 'en' depends on translation, but, only using /en/ for all links is fine for now~~
+* ~~Links to external sites: Are not linked except mysql.com links~~
 * ~~<function> tags do not automatically link, so the DocBook ends up like:
     Ours: \<function>mysql_connect</function>
     Theirs: \<link linkend="apis-php-function.mysql-connect">\<function>mysql_connect\</function>\</link>~~
