@@ -443,7 +443,7 @@ COPYRIGHT;
             } else {
 
                 if (isset($this->links[$linkto])) {
-                    $link = $this::URL_PHPNET . 'manual/en/' . $this->links[$linkto];
+                    $link = $this::URL_PHPNET . 'manual/' . Config::language() . '/' . $this->links[$linkto];
                 }
                 
                 if ($name === 'xref') {
