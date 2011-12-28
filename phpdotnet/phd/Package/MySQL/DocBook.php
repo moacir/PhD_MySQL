@@ -251,19 +251,7 @@ HEADER;
         switch ($attr) {
             case 'xml:id':
                 $attr = 'id';
-
-                //Change main ids
-                if ($value == 'ref.mysqli' || $value == 'book.mysqli') {
-                    $value = 'mysqli';
-                } else if ($value == 'book.pdo' || $value == 'ref.pdo-mysqli') {
-                    $value = 'pdo-mysql';
-                } else if ($value == 'intro.mysql' || $value == 'book.mysql') {
-                    $value = 'mysql';
-                } else if ($value == 'book.mysqlnd') {
-                    $value = 'mysqlnd';
-                }
-
-                $value = $this::ID_PREFIX . $value;
+                $value = $this->replaceMysqlIds($value);
                 break;
             case 'role':
             case 'choice':
@@ -279,6 +267,24 @@ HEADER;
             'attr' => $attr,
             'value' => $value,
         );
+    }
+    
+    public function replaceMysqlIds($id)
+    {
+        $value = trim($id);
+
+        //Change main ids
+        if ($id == 'book.mysqli') {
+            $value = 'mysqli';
+        } else if ($value == 'book.pdo' || $value == 'ref.pdo-mysql') {
+            $value = 'pdo-mysql';
+        } else if ($value == 'intro.mysql' || $value == 'book.mysql') {
+            $value = 'mysql';
+        } else if ($value == 'book.mysqlnd') {
+            $value = 'mysqlnd';
+        }
+        
+        return $this::ID_PREFIX . $value;
     }
 
     public function getCopyRightInfo ()
@@ -408,7 +414,7 @@ COPYRIGHT;
 
             // Link mysql links locally
             if (false !== strpos($linkto, 'mysql') && false === strpos($linkto, 'faq')) {
-                $link = $this::ID_PREFIX . $linkto;
+                $link = $this->replaceMysqlIds($linkto);
                 $linktype   = 'local';
             } else {
                 // Non-mysql links are now external
