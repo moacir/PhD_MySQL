@@ -115,6 +115,24 @@ class Package_MySQL_DocBook extends Format
         'language.types.integer'                     => 'language.types.integer',
         'book.stream'                                => 'book.stream',
     );
+    
+    protected $deprecated = array(
+        'mysql_createdb',
+        'mysql_dbname',
+        'mysql_dropdb',
+        'mysql_fieldflags',
+        'mysql_fieldlen',
+        'mysql_fieldname',
+        'mysql_fieldtable',
+        'mysql_fieldtype',
+        'mysql_freeresult',
+        'mysql_listdbs',
+        'mysql_listfields',
+        'mysql_listtables',
+        'mysql_numfields',
+        'mysql_numrows',
+        'mysql_selectdb',           
+    );
 
     /**
      * Store information about the current chunk 
@@ -275,10 +293,15 @@ HEADER;
     
     public function linkExternal($value)
     {
-        if (false === strpos($value, 'www.mysql.com')) {
-            return true;
+        if (false !== stripos($value, 'www.mysql.com')) {
+            return false;
         }
-        return false;
+        
+        if (in_array(strtolower($value), $this->deprecated)) {
+            return false;
+        }
+
+        return true;
     }
     
     public function replaceMysqlIds($id)
@@ -358,6 +381,11 @@ COPYRIGHT;
             $filename = $this::ID_PREFIX . $filename;
             return sprintf('<link linkend="%s"><function>%s</function></link>', $filename, $value);
         } else {
+            
+            if (!$this->linkExternal($value)) {
+                return sprintf('<function>%s</function>', $value);
+            }
+            
             $url = $this::URL_PHPNET . $value;
             return sprintf('<ulink url="%s"><function>%s</function></ulink>', $url, $value);
         }
