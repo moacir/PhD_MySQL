@@ -494,11 +494,19 @@ COPYRIGHT;
         
         if ($open) {
 
+            $xmlContent = sprintf('<notatag>%s</notatag>', ReaderKeeper::getReader()->readInnerXML());
+            $xmlParser  = simplexml_load_string($xmlContent);
+            $colspec    = (array) $xmlParser->colspec;
+            
             if (isset($attrs[Reader::XMLNS_DOCBOOK]["cols"])) {
 
                 $cols       = (int) $attrs[Reader::XMLNS_DOCBOOK]["cols"];
                 $text       = '<tgroup cols="' . $cols . '">' . "\n";
                 $percent    = floor(100 / $cols);
+                
+                if (!empty($colspec)) {
+                    return $text;
+                }
 
                 for ($i = 1; $i <= $cols; $i++) {
                 
