@@ -273,6 +273,14 @@ HEADER;
         );
     }
     
+    public function linkExternal($value)
+    {
+        if (false === strpos($value, 'www.mysql.com')) {
+            return true;
+        }
+        return false;
+    }
+    
     public function replaceMysqlIds($id)
     {
         $value = trim($id);
@@ -438,13 +446,11 @@ COPYRIGHT;
         // External links
         if (!$link && isset($attrs[Reader::XMLNS_XLINK]['href'])) {
             $linkto     = $attrs[Reader::XMLNS_XLINK]['href'];
+            $link       = $linkto;
             $linktype   = 'external';
-            
-            // Only link mysql.com links
-            if (false !== strpos($linkto, 'mysql.com')) {
-                $link = $linkto;
-            } else {
-                $link = $linkto;
+
+            if (!$this->linkExternal($link)) {
+                return '';
             }
         }
         
@@ -458,7 +464,7 @@ COPYRIGHT;
                     return '<link linkend="' . $link . '">';
                 }
                 
-            } else {
+            } elseif ($linktype === 'external') {
 
                 if (isset($this->links[$linkto])) {
                     $link = $this::URL_PHPNET . 'manual/' . Config::language() . '/' . $this->links[$linkto];
@@ -469,13 +475,17 @@ COPYRIGHT;
                 } else {
                     return '<ulink url="' . $link . '">';
                 }
+            } else {
+                return $link;
             }
         }
         
         if ($linktype === 'local') {
             return "</link>";            
-        } else {
+        } elseif ($linktype === 'external') {
             return '</ulink>';
+        } else {
+            return '';
         }
     }
 
