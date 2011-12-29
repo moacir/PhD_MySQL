@@ -7,6 +7,7 @@
  * @category PhD
  * @package  PhD_MySQL
  * @author   Moacir de Oliveira <moacir@php.net>
+ * @author   Philip Olson <philip@php.net>
  * @license  http://www.opensource.org/licenses/bsd-license.php BSD Style
  * @version  SVN: $Id$
  * @link     https://doc.php.net/phd/
@@ -22,6 +23,7 @@ namespace phpdotnet\phd;
  * @category PhD
  * @package  PhD_MySQL
  * @author   Moacir de Oliveira <moacir@php.net>
+ * @author   Philip Olson <philip@php.net>
  * @license  http://www.opensource.org/licenses/bsd-license.php BSD Style
  * @link     https://doc.php.net/phd/
  */

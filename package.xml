@@ -20,6 +20,13 @@
     <active>yes</active>
   </lead>
 
+  <lead>
+    <name>Philip Olson</name>
+    <user>philip</user>
+    <email>philip@php.net</email>
+    <active>yes</active>
+  </lead>
+
   <date>2011-12-14</date>
   <version>
     <release>0.1.0</release>
