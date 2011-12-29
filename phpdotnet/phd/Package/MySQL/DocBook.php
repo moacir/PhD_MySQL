@@ -85,6 +85,7 @@ class Package_MySQL_DocBook extends Format
         'link'          => 'format_link_text',
         'xref'          => 'format_link_text',
         'tgroup'        => 'format_tgroup_text',
+        'initializer'   => 'format_initializer_text',
     );
     
     protected $links = array(
@@ -525,9 +526,15 @@ COPYRIGHT;
         
         return "</tgroup>\n";
     }
+    
+    public function format_initializer_text($value, $tag)
+    {
+        return '=' . $value;
+    }
 }
 
 /*
  * vim600: sw=4 ts=4 syntax=php et
  * vim<600: sw=4 ts=4
  */
+ 
