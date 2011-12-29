@@ -65,6 +65,7 @@ class Package_MySQL_DocBook extends Format
         'link'          => 'format_link',
         'xref'          => 'format_link',
         'tgroup'        => 'format_tgroup',
+        'varname'       => 'format_varname',
     );
 
     protected $mytextmap = array(
@@ -400,6 +401,14 @@ COPYRIGHT;
             return '<para>';
         }
         return '</para>';
+    }
+
+    public function format_varname($open, $name, $attrs, $props)
+    {
+        if ($open) {
+            return '<varname>';
+        }
+        return '</varname>';
     }
 
     public function format_link($open, $name, $attrs, $props)
