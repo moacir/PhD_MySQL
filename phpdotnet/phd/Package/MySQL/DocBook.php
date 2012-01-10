@@ -325,7 +325,7 @@ HEADER;
     public function getCopyRightInfo ()
     {
         return <<<COPYRIGHT
-<para><link linkend="php-api-copyright">Copyright 1997-2011 the PHP Documentation Group.</link></para>
+<para><link linkend="php-api-copyright">Copyright 1997-2012 the PHP Documentation Group.</link></para>
 COPYRIGHT;
     }
 
