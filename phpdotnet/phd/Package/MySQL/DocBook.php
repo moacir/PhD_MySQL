@@ -377,7 +377,7 @@ COPYRIGHT;
     public function format_function_text($value, $tag)
     {
         $ref = strtolower(str_replace(array('_', '::', '->'), array('-', '-', '-'), $value));
-        if (($filename = $this->getRefnameLink($ref)) !== null) {
+        if (($filename = $this->getRefnameLink($ref)) !== null && false !== strpos($ref, 'mysql')) {
             $filename = $this::ID_PREFIX . $filename;
             return sprintf('<link linkend="%s"><function>%s</function></link>', $filename, $value);
         } else {
