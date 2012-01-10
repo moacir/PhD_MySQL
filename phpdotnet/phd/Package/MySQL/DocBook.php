@@ -377,7 +377,7 @@ COPYRIGHT;
     public function format_function_text($value, $tag)
     {
         $ref = strtolower(str_replace(array('_', '::', '->'), array('-', '-', '-'), $value));
-        if (($filename = $this->getRefnameLink($ref)) !== null && false !== strpos($ref, 'mysql')) {
+        if (($filename = $this->getRefnameLink($ref)) !== null && false !== stripos($ref, 'mysql')) {
             $filename = $this::ID_PREFIX . $filename;
             return sprintf('<link linkend="%s"><function>%s</function></link>', $filename, $value);
         } else {
@@ -461,7 +461,7 @@ COPYRIGHT;
             $linkto     = $attrs[Reader::XMLNS_DOCBOOK]["linkend"];
 
             // Link mysql links locally
-            if (false !== strpos($linkto, 'mysql') && false === strpos($linkto, 'faq')) {
+            if (false !== stripos($linkto, 'mysql') && false === strpos($linkto, 'faq')) {
                 $link = $this->replaceMysqlIds($linkto);
                 $linktype   = 'local';
             } else {
