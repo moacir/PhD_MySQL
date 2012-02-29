@@ -45,7 +45,7 @@ class Package_MySQL_DocBook extends Format
         'refsect1'      => 'format_suppressed_tags',
         'section'       => array(
             /*DEFAULT*/    'format_section',
-            'partintro' => 'format_suppressed_tags',
+            'partintro' => 'format_section_id',
         ),
         'set'           => 'format_section',
         'title'         => array(
@@ -347,6 +347,14 @@ COPYRIGHT;
 
     public function format_suppressed_tags($open, $name, $attrs, $props)
     {
+        return '';
+    }
+
+    public function format_section_id($open, $name, $attrs, $props)
+    {
+        if ($open && isset($attrs['http://www.w3.org/XML/1998/namespace']['id'])) {
+            return '<para id="' . $this->replaceMysqlIds($attrs['http://www.w3.org/XML/1998/namespace']['id']) . '"></para>';
+        }
         return '';
     }
     
