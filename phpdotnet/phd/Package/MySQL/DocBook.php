@@ -317,6 +317,8 @@ HEADER;
             $value = 'mysql';
         } else if ($value == 'book.mysqlnd') {
             $value = 'mysqlnd';
+        } else if ($value == 'mysql') {
+            $value = 'mysqlinfo';
         }
         
         return $this::ID_PREFIX . $value;
