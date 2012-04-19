@@ -68,6 +68,7 @@ class Package_MySQL_DocBook extends Format
         'xref'          => 'format_link',
         'tgroup'        => 'format_tgroup',
         'varname'       => 'format_varname',
+        'info'          => 'format_info',
     );
 
     protected $mytextmap = array(
@@ -412,6 +413,18 @@ COPYRIGHT;
             return '<para><emphasis role="bold">';
         }
         return '</emphasis></para>';
+    }
+
+    public function format_info($open, $name, $attrs, $props)
+    {
+        if ($open) {
+            if (isset($attrs['http://www.w3.org/XML/1998/namespace']['id'])) {
+                return '<section id="' . $this->replaceMysqlIds($attrs['http://www.w3.org/XML/1998/namespace']['id']) . '">';
+            } else {
+                return '<section>';
+            }
+        }
+        return '</section>';
     }
 
     public function format_refnamediv($open, $name, $attrs, $props)
