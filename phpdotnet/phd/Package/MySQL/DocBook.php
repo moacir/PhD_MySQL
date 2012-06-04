@@ -69,6 +69,7 @@ class Package_MySQL_DocBook extends Format
         'tgroup'        => 'format_tgroup',
         'varname'       => 'format_varname',
         'info'          => 'format_info',
+        'refsynopsisdiv'=> 'format_suppressed_tags',
     );
 
     protected $mytextmap = array(
