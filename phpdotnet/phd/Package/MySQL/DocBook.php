@@ -280,9 +280,11 @@ HEADER;
             case 'role':
             case 'choice':
             case 'xmlns':
+            case 'xmlns:phd':
             case 'xmlns:phpdoc':
             case 'xmlns:xi':
             case 'xmlns:xlink':
+            case 'phd:args':
                 $attr = $value = '';
                 break;
         }
