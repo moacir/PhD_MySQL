@@ -33,7 +33,8 @@ class Package_MySQL_DocBook extends Format
         'appendix'      => 'format_section',
         'book'          => 'format_section',
         'chapter'       => 'format_section',
-        'function'      => 'format_suppressed_tags',
+        'function'      => 'format_function',
+        'methodname'    => 'format_function',
         'partintro'     => 'format_suppressed_tags',
         'phpdoc:classref'   => 'format_section',
         'preface'       => 'format_suppressed_tags',
@@ -74,6 +75,11 @@ class Package_MySQL_DocBook extends Format
 
     protected $mytextmap = array(
         'function'      => 'format_function_text',
+        'methodname'    => array(
+            /*DEFAULT*/        'format_function_text',
+           'methodsynopsis'      => 'format_generic_tag',
+           'constructorsynopsis' => 'format_generic_tag',
+        ),
         'refnamediv'    => 'format_refnamediv_text',
         'title'         => array(
             /*DEFAULT*/    false,
@@ -143,6 +149,7 @@ class Package_MySQL_DocBook extends Format
      */
     protected $cchunk = array(
         'titleabbrev' => '',
+        'args'        => '',
     );
 
     public function __construct()
@@ -289,7 +296,6 @@ HEADER;
             case 'xmlns:phpdoc':
             case 'xmlns:xi':
             case 'xmlns:xlink':
-            case 'phd:args':
                 $attr = $value = '';
                 break;
         }
@@ -393,8 +399,24 @@ COPYRIGHT;
         return $titleabbrev . '</title>' . $this->getCopyRightInfo();
     }
 
+    public function format_function($open, $tag, $attrs, $props) {
+        if ($open) {
+            if (isset($attrs[Reader::XMLNS_PHD]['args'])) {
+                $this->cchunk['args'] = $attrs[Reader::XMLNS_PHD]['args'];
+            }
+        } else {
+            $this->cchunk['args'] = '';
+        }
+
+        return '';
+    }
+	
     public function format_function_text($value, $tag)
     {
+        if ($this->cchunk['args'] !== '') {
+            $value .= sprintf('(%s)', $this->cchunk['args']);
+        }
+
         $ref = strtolower(str_replace(array('_', '::', '->'), array('-', '-', '-'), $value));
         if (($filename = $this->getRefnameLink($ref)) !== null && false !== stripos($ref, 'mysql')) {
             $filename = $this::ID_PREFIX . $filename;
@@ -409,6 +431,11 @@ COPYRIGHT;
             return sprintf('<ulink url="%s"><function>%s</function></ulink>', $url, $value);
         }
     }
+    
+    public function format_generic_tag($value, $tag)
+    {
+		return '<' . $tag . '>' . $value . '</' . $tag . '>';
+	}
 
     public function format_refentry($open, $name, $attrs, $props)
     {
