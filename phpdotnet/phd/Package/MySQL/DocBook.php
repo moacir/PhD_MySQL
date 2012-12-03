@@ -34,6 +34,7 @@ class Package_MySQL_DocBook extends Format
         'book'          => 'format_section',
         'chapter'       => 'format_section',
         'function'      => 'format_function',
+        'informaltable' => 'format_informaltable',
         'methodname'    => 'format_function',
         'partintro'     => 'format_suppressed_tags',
         'phpdoc:classref'   => 'format_section',
@@ -43,7 +44,7 @@ class Package_MySQL_DocBook extends Format
         'refname'       => 'format_refname',
         'refpurpose'    => 'format_refpurpose',
         'refnamediv'    => 'format_refnamediv',
-        'refsect1'      => 'format_suppressed_tags',
+        'refsect1'      => 'format_refsect1',
         'section'       => array(
             /*DEFAULT*/    'format_section',
             'partintro' => 'format_section_id',
@@ -410,7 +411,7 @@ COPYRIGHT;
 
         return '';
     }
-	
+    
     public function format_function_text($value, $tag)
     {
         if ($this->cchunk['args'] !== '') {
@@ -434,8 +435,8 @@ COPYRIGHT;
     
     public function format_generic_tag($value, $tag)
     {
-		return '<' . $tag . '>' . $value . '</' . $tag . '>';
-	}
+        return '<' . $tag . '>' . $value . '</' . $tag . '>';
+    }
 
     public function format_refentry($open, $name, $attrs, $props)
     {
@@ -498,6 +499,39 @@ COPYRIGHT;
             return '<para>';
         }
         return '</para>';
+    }
+
+    // refsect1 was format_suppressed_tags but we need the role for format_informaltable
+    public function format_refsect1($open, $name, $attrs, $props) {
+       if ($open) {
+           if (isset($attrs[Reader::XMLNS_DOCBOOK]['role']) && $attrs[Reader::XMLNS_DOCBOOK]['role']) {
+               $this->role = $attrs[Reader::XMLNS_DOCBOOK]['role'];
+           }
+       }
+    }
+
+   // An <informaltable> should include a <textobject> for user accessibility reasons
+   // TODO: Either:
+   //  a. Change unknown informaltable's to table, or 
+   //  b. take them into account, instead of using "Unknown PHP API feature." for all
+    public function format_informaltable($open, $name, $attrs, $props) {
+        $text = '';
+        if ($open) {
+            $text .= '<informaltable>';
+            if (isset($this->role)) {
+                if ($this->role == 'changelog') {
+                    $text .= '<textobject><phrase>Changelog information for this function</phrase></textobject>';
+                } else {
+                    // TODO: No other informaltable roles exist, it seems (yet?)
+                    $text .= '<textobject><phrase>Unknown PHP API feature.</phrase></textobject>';
+                }
+            } else {
+                $text .= "<textobject><phrase>Unknown PHP API feature.</phrase></textobject>";
+            }
+        } else {
+            $text .= '</informaltable>';
+        }
+        return $text;
     }
 
     public function format_varname($open, $name, $attrs, $props)
