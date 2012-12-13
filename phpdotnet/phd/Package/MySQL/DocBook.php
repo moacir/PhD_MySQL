@@ -536,15 +536,17 @@ COPYRIGHT;
             $height   = $filesize[1];
             $format   = trim(strtoupper(str_replace('image/', '', $filesize['mime'])));
             
-            // TODO: Deal with this
+            // TODO: Deal with this. Using a random id for now. Id is not always set in the PHP docs.
             $id = uniqid('php-api-');
 
             // TODO: Will this work? Copy image to the appropriate directory
-            $imagedir = $_SERVER['MYSQLDOC_TREE'] . "/refman-common/images/published";
-            if (is_dir($imagedir) && is_file($filepath)) {
-                $newfilepath = $imagedir . '/' . $filename;
-                // TODO: Add svn add here, for new images, or deal with this elsewhere
-                copy($filepath, $newfilepath);
+            if (isset($_SERVER['MYSQLDOC_TREE'])) {
+                $imagedir = $_SERVER['MYSQLDOC_TREE'] . "/refman-common/images/published";
+                if (is_dir($imagedir) && is_file($filepath)) {
+                    $newfilepath = $imagedir . '/' . $filename;
+                    // TODO: Add svn add here, for new images, or deal with this elsewhere
+                    copy($filepath, $newfilepath);
+                }
             }
 
             $text  =  "<figure id=\"$id\"><title>$title</title>";
