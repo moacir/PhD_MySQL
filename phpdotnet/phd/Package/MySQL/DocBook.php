@@ -36,6 +36,7 @@ class Package_MySQL_DocBook extends Format
         'function'      => 'format_function',
         'informaltable' => 'format_informaltable',
         'methodname'    => 'format_function',
+        'mediaobject'   => 'format_mediaobject',
         'partintro'     => 'format_suppressed_tags',
         'phpdoc:classref'   => 'format_section',
         'preface'       => 'format_suppressed_tags',
@@ -95,6 +96,7 @@ class Package_MySQL_DocBook extends Format
         'xref'          => 'format_link_text',
         'tgroup'        => 'format_tgroup_text',
         'initializer'   => 'format_initializer_text',
+        'mediaobject'   => 'format_mediaobject_text',
     );
     
     protected $links = array(
@@ -508,6 +510,53 @@ COPYRIGHT;
                $this->role = $attrs[Reader::XMLNS_DOCBOOK]['role'];
            }
        }
+    }
+
+    public function format_mediaobject_text($value, $tag) {
+        return '';
+    }
+
+    public function format_mediaobject($open, $name, $attrs, $props) {
+    
+        if ($open) {
+            // Get data from XML elements (imageobject->imagedata) inside <mediaobject>
+            $xmlContent = sprintf('<notatag>%s</notatag>', ReaderKeeper::getReader()->readInnerXML());
+            $xmlParser  = simplexml_load_string($xmlContent);
+
+            // Elements we use
+            $title    = (string) $xmlParser->alt;
+            $filepath = (string) $xmlParser->imageobject->imagedata[0]['fileref'];
+            
+            // We also need the image information, such as width/height
+            $filesize = getimagesize($filepath);
+            $filename = basename($filepath);
+
+            // TOOD: Calculate width for role="fo"
+            $width    = $filesize[0];
+            $height   = $filesize[1];
+            $format   = trim(strtoupper(str_replace('image/', '', $filesize['mime'])));
+            
+            // TODO: Deal with this
+            $id = uniqid('php-api-');
+
+            // TODO: Will this work? Copy image to the appropriate directory
+            $imagedir = $_SERVER['MYSQLDOC_TREE'] . "/refman-common/images/published";
+            if (is_dir($imagedir) && is_file($filepath)) {
+                $newfilepath = $imagedir . '/' . $filename;
+                // TODO: Add svn add here, for new images, or deal with this elsewhere
+                copy($filepath, $newfilepath);
+            }
+
+            $text  =  "<figure id=\"$id\"><title>$title</title>";
+            $text .= "<mediaobject>";
+            $text .= "<imageobject role=\"html\"><imagedata contentwidth=\"$width\" contentdepth=\"$height\" fileref=\"images/published/$filename\" format=\"$format\" lang=\"en\"/></imageobject>";
+            $text .= "<imageobject role=\"fo\"><imagedata width=\"100%\" fileref=\"images/published/$filename\" format=\"$format\" lang=\"en\"/></imageobject>";
+            $text .= "<textobject><phrase lang=\"en\">$title</phrase></textobject>";
+            $text .= "</mediaobject>";
+        } else {
+            $text = '</figure>';
+        }
+        return $text;
     }
 
    // An <informaltable> should include a <textobject> for user accessibility reasons
