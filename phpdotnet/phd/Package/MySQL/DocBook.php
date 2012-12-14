@@ -554,8 +554,6 @@ COPYRIGHT;
             // We also need the image information, such as width/height
             $filesize = getimagesize($filepath);
             $filename = basename($filepath);
-
-            // TOOD: Calculate width for role="fo"
             $width    = $filesize[0];
             $height   = $filesize[1];
             $format   = trim(strtoupper(str_replace('image/', '', $filesize['mime'])));
