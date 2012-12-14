@@ -66,6 +66,18 @@ class Package_MySQL_DocBook extends Format
             ),
             'set'       => 'format_section_title',
         ),
+        'alt'           => array(
+                /*DEFAULT*/  false,
+                'mediaobject' => 'format_suppressed_tags'
+        ),
+        'imageobject'   => array(
+                /*DEFAULT*/ false,
+                'mediaobject' => 'format_suppressed_tags',
+        ),
+        'imagedata'   => array(
+                /*DEFAULT*/ false,
+                'imageobject' => 'format_suppressed_tags',
+        ),
         'titleabbrev'   => 'format_suppressed_tags',
         'link'          => 'format_link',
         'xref'          => 'format_link',
@@ -97,6 +109,18 @@ class Package_MySQL_DocBook extends Format
         'tgroup'        => 'format_tgroup_text',
         'initializer'   => 'format_initializer_text',
         'mediaobject'   => 'format_mediaobject_text',
+        'alt'           => array(
+                /*DEFAULT*/ false,
+                'mediaobject' => 'format_suppressed_text'
+        ),
+        'imageobject'   => array(
+                /*DEFAULT*/ false,
+                'mediaobject' => 'format_suppressed_text',
+        ),
+        'imagedata'   => array(
+                /*DEFAULT*/ false,
+                'imageobject' => 'format_suppressed_text',
+        ),
     );
     
     protected $links = array(
