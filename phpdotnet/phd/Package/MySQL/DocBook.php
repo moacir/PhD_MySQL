@@ -543,31 +543,37 @@ COPYRIGHT;
     public function format_mediaobject($open, $name, $attrs, $props) {
     
         if ($open) {
+            // Server specific variables
+            $phpdocdir    = isset($_SERVER['PHPDOCDIR'])     ? $_SERVER['PHPDOCDIR']     : '.';
+            $mysqldoctree = isset($_SERVER['MYSQLDOC_TREE']) ? $_SERVER['MYSQLDOC_TREE'] : '';	
+
             // Get data from XML elements (imageobject->imagedata) inside <mediaobject>
             $xmlContent = sprintf('<notatag>%s</notatag>', ReaderKeeper::getReader()->readInnerXML());
             $xmlParser  = simplexml_load_string($xmlContent);
 
             // Elements we use
-            $title    = (string) $xmlParser->alt;
-            $filepath = (string) $xmlParser->imageobject->imagedata[0]['fileref'];
-            
+            $title     = (string) $xmlParser->alt;
+            $filepath  = (string) $xmlParser->imageobject->imagedata[0]['fileref'];
+            $pfilepath = $phpdocdir . '/' . $filepath;
+                        
             // We also need the image information, such as width/height
-            $filesize = getimagesize($filepath);
+            $filesize = getimagesize($phpdocdir . '/' . $filepath);
             $filename = basename($filepath);
             $width    = $filesize[0];
             $height   = $filesize[1];
             $format   = trim(strtoupper(str_replace('image/', '', $filesize['mime'])));
             
             // TODO: Deal with this. Using a random id for now. Id is not always set in the PHP docs.
-            $id = uniqid('php-api-');
-
+            $pathinfo = pathinfo($filename);
+            $id       = 'apis-php-' . $pathinfo['filename'] . '-figure';
+            
             // TODO: Will this work? Copy image to the appropriate directory
-            if (isset($_SERVER['MYSQLDOC_TREE'])) {
-                $imagedir = $_SERVER['MYSQLDOC_TREE'] . "/refman-common/images/published";
-                if (is_dir($imagedir) && is_file($filepath)) {
+            if (!empty($mysqldoctree)) {
+                $imagedir = $mysqldoctree . "/refman-common/images/published";
+                if (is_dir($imagedir) && is_file($pfilepath)) {
                     $newfilepath = $imagedir . '/' . $filename;
                     // TODO: Add svn add here, for new images, or deal with this elsewhere
-                    copy($filepath, $newfilepath);
+                    copy($pfilepath, $newfilepath);
                 }
             }
 
